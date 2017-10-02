@@ -1,5 +1,6 @@
 var currentTab;
 var currentBookmark;
+var repoList = [];
 
 /*
  * Updates the browserAction icon to reflect whether the current page
@@ -49,7 +50,7 @@ function toggleBookmark() {
   let owner = seg[0];
   let name = seg[1];
   // github-mac://openRepo/https://github.com/jgallagher/rusqlite
-  let cloneStr = ['github-windows://openRepo', currentURL.origin, owner, name].join('/');
+  let cloneStr = ['githoard://openRepo', currentURL.origin, owner, name].join('/');
   let repoUrl = new URL(cloneStr);
 
   console.log('githoard tab', currentTab);
@@ -84,6 +85,13 @@ browser.browserAction.onClicked.addListener(toggleBookmark);
  */
 function updateActiveTab(tabs) {
 
+  function checkCode(currentTab) {
+    // let currentURL = new URL(currentTab.url);
+    var checkForGitURL = /"((git|ssh|http(s)?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:/\-~]+)(\.git)(\/)?"/gi;
+    var gitCheck = document.documentElement.innerHTML.match(checkForGitURL);
+    console.log('gitCheck', currentTab.url, gitCheck, JSON.stringify(gitCheck), document)
+  }
+
   function isSupportedProtocol(urlString) {
     var supportedProtocols = ["https:", "http:", "ftp:", "file:"];
     var url = document.createElement('a');
@@ -94,15 +102,21 @@ function updateActiveTab(tabs) {
   function updateTab(tabs) {
     if (tabs[0]) {
       currentTab = tabs[0];
-      if (isSupportedProtocol(currentTab.url)) {
-        var searching = browser.bookmarks.search({url: currentTab.url});
-        searching.then((bookmarks) => {
-          currentBookmark = bookmarks[0];
-          updateIcon();
-        });
-      } else {
-        console.log(`Bookmark it! does not support the '${currentTab.url}' URL.`)
-      }
+      console.log('updateTab repoList', repoList.includes(currentTab.url), currentTab.url);
+
+      currentBookmark = repoList.includes(currentTab.url);
+      updateIcon();
+      // checkCode(currentTab);
+      // if (isSupportedProtocol(currentTab.url)) {
+      //   var searching = browser.bookmarks.search({url: currentTab.url});
+      //   searching.then((bookmarks) => {
+      //     currentBookmark = bookmarks[0];
+      //     console.log('currentBookmark', currentBookmark);
+      //     updateIcon();
+      //   });
+      // } else {
+      //   console.log(`Bookmark it! does not support the '${currentTab.url}' URL.`)
+      // }
     }
   }
 
@@ -111,10 +125,10 @@ function updateActiveTab(tabs) {
 }
 
 // listen for bookmarks being created
-browser.bookmarks.onCreated.addListener(updateActiveTab);
+// browser.bookmarks.onCreated.addListener(updateActiveTab);
 
 // listen for bookmarks being removed
-browser.bookmarks.onRemoved.addListener(updateActiveTab);
+// browser.bookmarks.onRemoved.addListener(updateActiveTab);
 
 // listen to tab URL changes
 browser.tabs.onUpdated.addListener(updateActiveTab);
@@ -124,6 +138,22 @@ browser.tabs.onActivated.addListener(updateActiveTab);
 
 // listen for window switching
 browser.windows.onFocusChanged.addListener(updateActiveTab);
+
+function hasGitRepo(message) {
+  console.log('hasGitRepo msg', message);
+  if (message.matches !== null) {
+    repoList.push(message.url);
+    updateActiveTab();
+  }
+  // browser.notifications.create({
+  //   "type": "basic",
+  //   "iconUrl": browser.extension.getURL("link.png"),
+  //   "title": "You clicked a link!",
+  //   "message": message.url
+  // });
+}
+
+browser.runtime.onMessage.addListener(hasGitRepo);
 
 // update when the extension loads initially
 updateActiveTab();
