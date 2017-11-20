@@ -9,11 +9,11 @@ var repoList = [];
 function updateIcon() {
   browser.browserAction.setIcon({
     path: currentBookmark ? {
-      19: "icons/star-filled-19.png",
-      38: "icons/star-filled-38.png"
+      19: "icons/19.png",
+      38: "icons/38.png"
     } : {
-      19: "icons/star-empty-19.png",
-      38: "icons/star-empty-38.png"
+      19: "icons/19-bizaro.png",
+      38: "icons/38-bizaro.png"
     },
     tabId: currentTab.id
   });
@@ -59,7 +59,8 @@ function toggleBookmark() {
 
   if (testUrl(currentURL)) {
     var creating = browser.tabs.create({
-      url: cloneStr
+      url: cloneStr,
+      active: false
     });
     creating.then((tab) => {
       var removing = browser.tabs.remove(tab.id);
@@ -70,28 +71,11 @@ function toggleBookmark() {
       });
     });
   }
-  // js-zeroclipboard-target
-  // if (currentBookmark) {
-  //   browser.bookmarks.remove(currentBookmark.id);
-  // } else {
-  //   browser.bookmarks.create({title: currentTab.title, url: currentTab.url});
-  // }
 }
 
 browser.browserAction.onClicked.addListener(toggleBookmark);
 
-/*
- * Switches currentTab and currentBookmark to reflect the currently active tab
- */
 function updateActiveTab(tabs) {
-
-  function checkCode(currentTab) {
-    // let currentURL = new URL(currentTab.url);
-    var checkForGitURL = /"((git|ssh|http(s)?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:/\-~]+)(\.git)(\/)?"/gi;
-    var gitCheck = document.documentElement.innerHTML.match(checkForGitURL);
-    console.log('gitCheck', currentTab.url, gitCheck, JSON.stringify(gitCheck), document)
-  }
-
   function isSupportedProtocol(urlString) {
     var supportedProtocols = ["https:", "http:", "ftp:", "file:"];
     var url = document.createElement('a');
@@ -106,17 +90,6 @@ function updateActiveTab(tabs) {
 
       currentBookmark = repoList.includes(currentTab.url);
       updateIcon();
-      // checkCode(currentTab);
-      // if (isSupportedProtocol(currentTab.url)) {
-      //   var searching = browser.bookmarks.search({url: currentTab.url});
-      //   searching.then((bookmarks) => {
-      //     currentBookmark = bookmarks[0];
-      //     console.log('currentBookmark', currentBookmark);
-      //     updateIcon();
-      //   });
-      // } else {
-      //   console.log(`Bookmark it! does not support the '${currentTab.url}' URL.`)
-      // }
     }
   }
 
