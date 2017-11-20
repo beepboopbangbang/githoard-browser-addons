@@ -41,9 +41,9 @@ function owner(str) {
 }
 
 /*
- * Add or remove the bookmark on the current page.
+ * Clone repo
  */
-function toggleBookmark() {
+function triggerClone() {
   let currentId = currentTab.id;
   let currentURL = new URL(currentTab.url);
   let seg = currentURL.pathname.split('/').filter(Boolean);
@@ -73,7 +73,7 @@ function toggleBookmark() {
   }
 }
 
-browser.browserAction.onClicked.addListener(toggleBookmark);
+browser.browserAction.onClicked.addListener(triggerClone);
 
 function updateActiveTab(tabs) {
   function isSupportedProtocol(urlString) {
@@ -112,12 +112,6 @@ function hasGitRepo(message) {
     repoList.push(message.url);
     updateActiveTab();
   }
-  // browser.notifications.create({
-  //   "type": "basic",
-  //   "iconUrl": browser.extension.getURL("link.png"),
-  //   "title": "You clicked a link!",
-  //   "message": message.url
-  // });
 }
 
 browser.runtime.onMessage.addListener(hasGitRepo);

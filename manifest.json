@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Hoard it!",
+  "name": "GitHoard - Quick Clone",
   "version": "1.1",
-  "description": "A simple Hoard button",
-  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/bookmark-it",
+  "description": "Show Clone button on pages with Git Repos",
+  "homepage_url": "https://github.com/jojobyte/githoard-firefox",
   "icons": {
     "48": "icons/48.png",
     "96": "icons/96.png"
@@ -16,7 +16,7 @@
 
   "browser_action": {
     "default_icon": "icons/38-bizaro.png",
-    "default_title": "Hoard it!"
+    "default_title": "GitHoard"
   },
 
   "background": {
