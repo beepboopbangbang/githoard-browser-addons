@@ -97,12 +97,6 @@ function updateActiveTab(tabs) {
   gettingActiveTab.then(updateTab);
 }
 
-// listen for bookmarks being created
-// browser.bookmarks.onCreated.addListener(updateActiveTab);
-
-// listen for bookmarks being removed
-// browser.bookmarks.onRemoved.addListener(updateActiveTab);
-
 // listen to tab URL changes
 browser.tabs.onUpdated.addListener(updateActiveTab);
 
