@@ -2,10 +2,6 @@ var currentTab;
 var currentBookmark;
 var repoList = [];
 
-/*
- * Updates the browserAction icon to reflect whether the current page
- * is already bookmarked.
- */
 function updateIcon() {
   browser.browserAction.setIcon({
     path: currentBookmark ? {
@@ -49,13 +45,13 @@ function triggerClone() {
   let seg = currentURL.pathname.split('/').filter(Boolean);
   let owner = seg[0];
   let name = seg[1];
-  // github-mac://openRepo/https://github.com/jgallagher/rusqlite
+  // githoard://openRepo/https://github.com/${owner}/{$name}
   let cloneStr = ['githoard://openRepo', currentURL.origin, owner, name].join('/');
   let repoUrl = new URL(cloneStr);
 
-  console.log('githoard tab', currentTab);
-  console.log('githoard url', currentURL);
-  console.log('githoard parse', owner, name, repoUrl);
+  // console.log('githoard tab', currentTab);
+  // console.log('githoard url', currentURL);
+  // console.log('githoard parse', owner, name, repoUrl);
 
   if (testUrl(currentURL)) {
     var creating = browser.tabs.create({
