@@ -1,7 +1,8 @@
-var currentTab;
-var currentHasRepo;
-var repoList = [];
-var repoObject = {};
+let currentTab;
+let currentHasRepo;
+let repoList = [];
+let repoObject = {};
+let logoDataUri = '';
 
 function updateIcon() {
   browser.browserAction.setIcon({
@@ -17,7 +18,7 @@ function updateIcon() {
 }
 
 function testUrl(url) {
-  // var checkForGitURL = /(?!")((http(s)|git|ssh?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:/\-~]+)(\.git)(\/)?(?=")/gi;
+  // const checkForGitURL = /(?!")((http(s)|git|ssh?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:/\-~]+)(\.git)(\/)?(?=")/gi;
   // console.log('testUrl', repoObject[url].matches);
   if (repoObject[url].matches.length) {
     return true;
@@ -32,7 +33,7 @@ function name(str) {
 
 function owner(str) {
   if (!str) return null;
-  var idx = str.indexOf(':');
+  const idx = str.indexOf(':');
   if (idx > -1) {
     return str.slice(idx + 1);
   }
@@ -72,20 +73,12 @@ function triggerClone() {
     // console.log('githoard id', currentId);
     // console.log('githoard tab', currentTab);
     // console.log('githoard url', currentURL);
+    // console.log('githoard protocol url', repoUrl);
 
-    var creating = browser.tabs.create({
-      url: cloneStr,
-      active: false
-    });
-    creating.then((tab) => {
-      console.log('githoard clone', cloneStr);
-      var removing = browser.tabs.remove(tab.id);
-      removing.then((tab) => {
-        var updating = browser.tabs.update(currentId, {
-          active: true
-        });
-      });
-    });
+
+    browser.tabs.sendMessage(currentId, { clone: cloneStr })
+      .then(response => console.log("Click Clone:", response.status))
+      .catch(error => console.error(`Clone Error: ${error}`));
   }
 }
 
@@ -93,12 +86,6 @@ browser.browserAction.onClicked.addListener(triggerClone);
 
 function updateActiveTab(tabs) {
   // console.log('githoard updateActiveTab', tabs);
-  function isSupportedProtocol(urlString) {
-    var supportedProtocols = ["https:", "http:", "ftp:", "file:"];
-    var url = document.createElement('a');
-    url.href = urlString;
-    return supportedProtocols.indexOf(url.protocol) != -1;
-  }
 
   function updateTab(tabs) {
     if (tabs[0]) {
@@ -110,15 +97,16 @@ function updateActiveTab(tabs) {
     }
   }
 
-  var gettingActiveTab = browser.tabs.query({active: true, currentWindow: true});
-  gettingActiveTab.then(updateTab);
+  browser.tabs.query({active: true, currentWindow: true}).then(updateTab);
 }
 
 browser.tabs.onUpdated.addListener(updateActiveTab);
 browser.tabs.onActivated.addListener(updateActiveTab);
 browser.windows.onFocusChanged.addListener(updateActiveTab);
 
-function hasGitRepo(message) {
+
+
+function hasGitRepo(message, sender, sendResponse) {
   // console.log('hasGitRepo msg', message);
   if (message.matches !== null) {
     // repoList.push(message.url);
@@ -129,5 +117,4 @@ function hasGitRepo(message) {
 
 browser.runtime.onMessage.addListener(hasGitRepo);
 
-// update when the extension loads initially
 updateActiveTab();

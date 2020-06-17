@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "GitHoard - Quick Clone",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Show GitHoard clone button on websites with links to Git repositories",
   "homepage_url": "https://github.com/jojobyte/githoard-firefox",
   "icons": {
@@ -28,6 +28,16 @@
       "matches": ["<all_urls>"],
       "js": ["check-git.js"]
     }
+  ],
+
+  "web_accessible_resources": [
+    "icons/19.png",
+    "icons/19-bizaro.png",
+    "icons/24.png",
+    "icons/38.png",
+    "icons/38-bizaro.png",
+    "icons/48.png",
+    "icons/96.png"
   ]
 
 }
