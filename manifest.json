@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "GitHoard - Quick Clone",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Show GitHoard clone button on websites with links to Git repositories",
   "homepage_url": "https://github.com/jojobyte/githoard-firefox",
   "icons": {
