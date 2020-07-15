@@ -1,4 +1,14 @@
-# GitHoard - Quick Clone
+<div align="center">
+<img width="150" src="https://raw.githubusercontent.com/beepboopbangbang/githoard/master/src/renderer/assets/icon.png" alt="GitHoard" />
+</div>
+
+<h3 align="center">
+GitHoard - Quick Clone
+</h3>
+
+<p align="center">
+Hoard git repositories with even more ease
+</p>
 
 ## What it does
 
